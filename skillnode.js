@@ -1,5 +1,55 @@
 'use strict';
 
+
+/**
+ * intents:
+
+BookAClassIntent Book the {ClassName} class at {Time} in {Location} 
+BookAClassIntent Book the {ClassName} class at {Time} 
+BookAClassIntent Book the {ClassName} class at {Location}  	
+BookAClassIntent Reserve {ClassName} at {Time} in {Location}
+BookAClassIntent Reserve {ClassName} at {Time}
+BookAClassIntent Reserve {ClassName} in {Location}
+
+BookedClassIntents View my bookings 
+BookedClassIntents What is the class I booked {TimePhrase}
+BookedClassIntents What is the class I booked {TimeDate}
+
+
+
+
+
+
+{
+  "intents": [
+    {
+      "intent": "MyColorIsIntent",
+      "slots": [
+        {
+          "name": "Color",
+          "type": "LIST_OF_COLORS"
+        }
+      ]
+    },
+    {
+      "intent": "WhatsMyColorIntent"
+    },
+    {
+      "intent": "AMAZON.HelpIntent"
+    }
+  ]
+}
+
+
+
+
+ *
+ *
+ *
+ */
+
+
+
 /**
  * This sample demonstrates a simple skill built with the Amazon Alexa Skills Kit.
  * The Intent Schema, Custom Slots, and Sample Utterances for this skill, as well as
@@ -48,12 +98,12 @@ function getWelcomeResponse(callback) {
     // If we wanted to initialize the session to have some attributes we could add those here.
     const sessionAttributes = {};
     const cardTitle = 'Welcome';
-    const speechOutput = 'Welcome to the Alexa Skills Kit sample. ' +
-        'Please tell me your favorite color by saying, my favorite color is red';
+    const speechOutput = 'Welcome to the Nuffield Health Alexa Booking System ' +
+        'What would you like to do?';
     // If the user either does not reply to the welcome message or says something that is not
     // understood, they will be prompted again with this text.
-    const repromptText = 'Please tell me your favorite color by saying, ' +
-        'my favorite color is red';
+    const repromptText = 'You can ask to book a gym class or search for the available classes' +
+        'by saying book me class at this time in this gym or what are the available classes at this gym';
     const shouldEndSession = false;
 
     callback(sessionAttributes,
@@ -75,6 +125,16 @@ function createFavoriteColorAttributes(favoriteColor) {
     };
 }
 
+function bookGymClass(intent, session, callback) {
+
+	if()
+
+
+	callback(sessionAttributes,
+         buildSpeechletResponse(cardTitle, speechOutput, repromptText, shouldEndSession));
+
+}
+
 /**
  * Sets the color in the session and prepares the speech to reply to the user.
  */
@@ -89,13 +149,11 @@ function setColorInSession(intent, session, callback) {
     if (favoriteColorSlot) {
         const favoriteColor = favoriteColorSlot.value;
         sessionAttributes = createFavoriteColorAttributes(favoriteColor);
-        speechOutput = `I now know your favorite color is ${favoriteColor}. You can ask me ` +
-            "your favorite color by saying, what's my favorite color?";
-        repromptText = "You can ask me your favorite color by saying, what's my favorite color?";
+        speechOutput = "Your class has been booked. See you tonight!";
+        repromptText = "Your class has been booked. See you tonight!";
     } else {
-        speechOutput = "I'm not sure what your favorite color is. Please try again.";
-        repromptText = "I'm not sure what your favorite color is. You can tell me your " +
-            'favorite color by saying, my favorite color is red';
+        speechOutput = "Your class has been booked. See you tonight!";
+        repromptText = "Your class has been booked. See you tonight!";
     }
 
     callback(sessionAttributes,
