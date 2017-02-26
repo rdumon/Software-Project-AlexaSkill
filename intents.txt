@@ -1,0 +1,36 @@
+BookAClassIntent Book the {ClassName} class at {Time} in {Location} 
+BookAClassIntent Book the {ClassName} class at {Time} 
+BookAClassIntent Book the {ClassName} class at {Location}  	
+BookAClassIntent Reserve {ClassName} at {Time} in {Location}
+BookAClassIntent Reserve {ClassName} at {Time}
+BookAClassIntent Reserve {ClassName} in {Location}
+
+BookedClassIntents View my bookings 
+BookedClassIntents What is the class I booked {TimePhrase}
+BookedClassIntents What is the class I booked {TimeDate}
+
+SearchAvailableClassIntent What are the available classes in {Gym}
+SearchAvailableClassIntent What are the available classes in {Gym}
+SearchAvailableClassIntent Is there a {Gym} {Time}
+SearchAvailableClassIntent What are the available classes in {Gym}
+
+
+
+  "intents": [
+    {
+      "intent": "MyColorIsIntent",
+      "slots": [
+        {
+          "name": "Color",
+          "type": "LIST_OF_COLORS"
+        }
+      ]
+    },
+    {
+      "intent": "WhatsMyColorIntent"
+    },
+    {
+      "intent": "AMAZON.HelpIntent"
+    }
+  ]
+}
