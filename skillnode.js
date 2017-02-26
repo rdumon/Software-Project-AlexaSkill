@@ -15,9 +15,10 @@ BookedClassIntents View my bookings
 BookedClassIntents What is the class I booked {TimePhrase}
 BookedClassIntents What is the class I booked {TimeDate}
 
-
-
-
+SearchAvailableClassIntent What are the available classes in {Gym}
+SearchAvailableClassIntent What are the available classes in {Gym}
+SearchAvailableClassIntent Is there a {Gym} {Time}
+SearchAvailableClassIntent What are the available classes in {Gym}
 
 
 {
@@ -112,7 +113,7 @@ function getWelcomeResponse(callback) {
 
 function handleSessionEndRequest(callback) {
     const cardTitle = 'Session Ended';
-    const speechOutput = 'Thank you for trying the Alexa Skills Kit sample. Have a nice day!';
+    const speechOutput = 'Thank you for using the Nuffield Skill. Have a nice day!';
     // Setting this to true ends the session and exits the skill.
     const shouldEndSession = true;
 
@@ -127,13 +128,44 @@ function createFavoriteColorAttributes(favoriteColor) {
 
 function bookGymClass(intent, session, callback) {
 
-	if()
+	const cardTitle = intent.name;
+	const className	= intent.slots.ClassName
+	var time,location	
+
+	if(intent.Time){
+		time = intent.Time;
+	} else {
+		const speechOut = 'You need to provide the time of the class in order to continue';
+		callback(sessionAttributes,
+         buildSpeechletResponse(cardTitle, speechOutput, null, null));
+	}
+
+	if(intent.Location){
+		location = intent.Location;
+	} else {
+		const speechOut = 'You need to provide a location for the class in order to continue';
+		callback(sessionAttributes,
+         buildSpeechletResponse(cardTitle, speechOutput, null, null));
+	}
+
+	//http request to backend 
 
 
 	callback(sessionAttributes,
          buildSpeechletResponse(cardTitle, speechOutput, repromptText, shouldEndSession));
 
 }
+
+function getBookedClass(intent, session, callback){
+
+
+}
+
+
+function searchForAvailableClasses(intent, session, callback){
+
+}
+
 
 /**
  * Sets the color in the session and prepares the speech to reply to the user.
@@ -216,13 +248,16 @@ function onIntent(intentRequest, session, callback) {
     const intentName = intentRequest.intent.name;
 
     // Dispatch to your skill's intent handlers
-    if (intentName === 'MyColorIsIntent') {
-        setColorInSession(intent, session, callback);
-    } else if (intentName === 'WhatsMyColorIntent') {
-        getColorFromSession(intent, session, callback);
+    
+    if (intentName === 'BookAClassIntent') {
+        bookGymClass(intent, session, callback);
+    } else if (intentName === 'BookedClassIntents') {
+        getBookedClass(intent, session, callback);
+    } else if (intentName === 'SearchAvailableClassIntent') {
+        searchForAvailableClasses(callback);
     } else if (intentName === 'AMAZON.HelpIntent') {
         getWelcomeResponse(callback);
-    } else if (intentName === 'AMAZON.StopIntent' || intentName === 'AMAZON.CancelIntent') {
+    }else if (intentName === 'AMAZON.StopIntent' || intentName === 'AMAZON.CancelIntent') {
         handleSessionEndRequest(callback);
     } else {
         throw new Error('Invalid intent');
