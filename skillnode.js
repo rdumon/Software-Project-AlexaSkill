@@ -46,12 +46,12 @@ function getWelcomeResponse(callback) {
     // If we wanted to initialize the session to have some attributes we could add those here.
     const sessionAttributes = {};
     const cardTitle = 'Welcome';
-    const speechOutput = 'Welcome to the Nuffield Health Alexa Booking System ' +
+    const speechOutput = 'Welcome to the Nuffield Health Alexa Booking System. ' +
         'What would you like to do?';
     // If the user either does not reply to the welcome message or says something that is not
     // understood, they will be prompted again with this text.
-    const repromptText = 'You can ask to book a gym class or search for the available classes' +
-        'by saying book me class at this time in this gym or what are the available classes at this gym';
+    const repromptText = 'You can ask to book a gym class or search for the available classes.' +
+        'Start saying: book me class at this time in this gym, or what are the available classes at this gym';
     const shouldEndSession = false;
 
     callback(sessionAttributes,
@@ -79,11 +79,11 @@ function bookGymClass(intent, session, callback) {
     if (className) {
         const gym = className.value;
         speechOutput = `the gym you mentioned is ${gym}.` +"";
-        repromptText = "You can ask me your favorite color by saying, what's my favorite color?";
+        repromptText = "You can view your bookings by saying view my bookings";
     } else {
-        speechOutput = "I'm not sure what your favorite color is. Please try again.";
-        repromptText = "I'm not sure what your favorite color is. You can tell me your " +
-            'favorite color by saying, my favorite color is red';
+        speechOutput = "I'm not sure what you mean. Please try again.";
+        repromptText = "Try again by saying: " +
+            'book me class at this time in this gym or what are the available classes at this gym';
     }
 
     callback(sessionAttributes, buildSpeechletResponse(cardTitle, speechOutput, repromptText, shouldEndSession));
@@ -114,10 +114,21 @@ function viewBookedClass(intent, session, callback) {
 function searchForClass(intent, session, callback) {
 
     const cardTitle = intent.name;
+    let gym = intent.slots.Gym;
     let repromptText = '';
     let sessionAttributes = {};
     const shouldEndSession = false;
-    let speechOutput = 'You have booked 2 classes!';
+    let speechOutput = '';
+
+    if (gym) {
+        const gymName = gym.value;
+        speechOutput = `the gym you mentioned is ${gymName}.` +"";
+        repromptText = "You can book this class by saying book this class at this time.";
+    } else {
+        speechOutput = "I'm not sure what you mean. Please try again.";
+        repromptText = "Try again by saying: " +
+            'Book me class at this time in this gym or what are the available classes at this gym.';
+    }
 
     callback(sessionAttributes, buildSpeechletResponse(cardTitle, speechOutput, repromptText, shouldEndSession));
 }

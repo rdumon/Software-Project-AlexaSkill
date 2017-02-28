@@ -19,7 +19,8 @@ LIST_OF_CLASSES cardio | pilates | boxing | swimming
 LIST_OF_LOCATIONS leicester square | russel square | kensington
 LIST_OF_GYMS leicester square | russel square | kensington
 
-  "intents": [
+{
+	"intents": [
     {
       "intent": "BookAClassIntent",
       "slots": [
