@@ -4,30 +4,60 @@ BookAClassIntent Book the {ClassName} class at {Location}
 BookAClassIntent Reserve {ClassName} at {Time} in {Location}
 BookAClassIntent Reserve {ClassName} at {Time}
 BookAClassIntent Reserve {ClassName} in {Location}
+BookAClassIntent Reserve {ClassName}
 
-BookedClassIntents View my bookings 
-BookedClassIntents What is the class I booked {TimePhrase}
-BookedClassIntents What is the class I booked {TimeDate}
+BookedClassIntent View my bookings 
+BookedClassIntent What is the class I booked {TimePhrase}
+BookedClassIntent What is the class I booked {TimeDate}
 
 SearchAvailableClassIntent What are the available classes in {Gym}
 SearchAvailableClassIntent What are the available classes in {Gym}
 SearchAvailableClassIntent Is there a {Gym} {Time}
 SearchAvailableClassIntent What are the available classes in {Gym}
 
-
+LIST_OF_CLASSES cardio | pilates | boxing | swimming
+LIST_OF_LOCATIONS leicester square | russel square | kensington
+LIST_OF_GYMS leicester square | russel square | kensington
 
   "intents": [
     {
-      "intent": "MyColorIsIntent",
+      "intent": "BookAClassIntent",
       "slots": [
         {
-          "name": "Color",
-          "type": "LIST_OF_COLORS"
+          "name": "ClassName",
+          "type": "LIST_OF_CLASSES"
+        },
+        {
+          "name": "Time",
+          "type": "AMAZON.Time"
+        },
+        {
+          "name": "Location",
+          "type": "LIST_OF_LOCATIONS"
         }
       ]
     },
     {
-      "intent": "WhatsMyColorIntent"
+      "intent": "BookedClassIntent"
+      "slots": [
+        {
+          "name": "TimePhrase",
+          "type": "AMAZON.Time"
+        },
+        {
+          "name": "TimeDate",
+          "type": "AMAZON.Date"
+        }
+       ]
+    },
+    {
+      "intent": "SearchAvailableClassIntent"
+      "slots": [
+        {
+          "name": "Gym",
+          "type": "LIST_OF_GYMS"
+        }
+       ]
     },
     {
       "intent": "AMAZON.HelpIntent"

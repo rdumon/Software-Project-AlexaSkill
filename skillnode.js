@@ -1,56 +1,4 @@
-'use strict'; 
-
-
-/**
- * intents:
-
-BookAClassIntent Book the {ClassName} class at {Time} in {Location} 
-BookAClassIntent Book the {ClassName} class at {Time} 
-BookAClassIntent Book the {ClassName} class at {Location}  	
-BookAClassIntent Reserve {ClassName} at {Time} in {Location}
-BookAClassIntent Reserve {ClassName} at {Time}
-BookAClassIntent Reserve {ClassName} in {Location}
-
-BookedClassIntents View my bookings 
-BookedClassIntents What is the class I booked {TimePhrase}
-BookedClassIntents What is the class I booked {TimeDate}
-
-SearchAvailableClassIntent What are the available classes in {Gym}
-SearchAvailableClassIntent What are the available classes in {Gym}
-SearchAvailableClassIntent Is there a {Gym} {Time}
-SearchAvailableClassIntent What are the available classes in {Gym}
-
-
-{
-  "intents": [
-    {
-      "intent": "MyColorIsIntent",
-      "slots": [
-        {
-          "name": "Color",
-          "type": "LIST_OF_COLORS"
-        }
-      ]
-    },
-    {
-      "intent": "WhatsMyColorIntent"
-    },
-    {
-      "intent": "AMAZON.HelpIntent"
-    }
-  ]
-}
-
-
-
-
- *
- *
- *
- */
-
-
-
+'use strict';
 /**
  * This sample demonstrates a simple skill built with the Amazon Alexa Skills Kit.
  * The Intent Schema, Custom Slots, and Sample Utterances for this skill, as well as
@@ -59,7 +7,6 @@ SearchAvailableClassIntent What are the available classes in {Gym}
  * For additional samples, visit the Alexa Skills Kit Getting Started guide at
  * http://amzn.to/1LGWsLG
  */
-
 
 // --------------- Helpers that build all of the responses -----------------------
 
@@ -120,104 +67,60 @@ function handleSessionEndRequest(callback) {
     callback({}, buildSpeechletResponse(cardTitle, speechOutput, null, shouldEndSession));
 }
 
-function createFavoriteColorAttributes(favoriteColor) {
-    return {
-        favoriteColor,
-    };
-}
-
 function bookGymClass(intent, session, callback) {
 
-	const cardTitle = intent.name;
-	const className	= intent.slots.ClassName
-	var time,location	
-
-	if(intent.Time){
-		time = intent.Time;
-	} else {
-		const speechOut = 'You need to provide the time of the class in order to continue';
-		callback(sessionAttributes,
-         buildSpeechletResponse(cardTitle, speechOutput, null, null));
-	}
-
-	if(intent.Location){
-		location = intent.Location;
-	} else {
-		const speechOut = 'You need to provide a location for the class in order to continue';
-		callback(sessionAttributes,
-         buildSpeechletResponse(cardTitle, speechOutput, null, null));
-	}
-
-	//http request to backend 
-
-
-	callback(sessionAttributes,
-         buildSpeechletResponse(cardTitle, speechOutput, repromptText, shouldEndSession));
-
-}
-
-function getBookedClass(intent, session, callback){
-
-
-}
-
-
-function searchForAvailableClasses(intent, session, callback){
-
-}
-
-
-/**
- * Sets the color in the session and prepares the speech to reply to the user.
- */
-function setColorInSession(intent, session, callback) {
     const cardTitle = intent.name;
-    const favoriteColorSlot = intent.slots.Color;
+    let className = intent.slots.ClassName;
     let repromptText = '';
     let sessionAttributes = {};
     const shouldEndSession = false;
     let speechOutput = '';
 
-    if (favoriteColorSlot) {
-        const favoriteColor = favoriteColorSlot.value;
-        sessionAttributes = createFavoriteColorAttributes(favoriteColor);
-        speechOutput = "Your class has been booked. See you tonight!";
-        repromptText = "Your class has been booked. See you tonight!";
+    if (className) {
+        const gym = className.value;
+        speechOutput = `the gym you mentioned is ${gym}.` +"";
+        repromptText = "You can ask me your favorite color by saying, what's my favorite color?";
     } else {
-        speechOutput = "Your class has been booked. See you tonight!";
-        repromptText = "Your class has been booked. See you tonight!";
+        speechOutput = "I'm not sure what your favorite color is. Please try again.";
+        repromptText = "I'm not sure what your favorite color is. You can tell me your " +
+            'favorite color by saying, my favorite color is red';
     }
 
-    callback(sessionAttributes,
-         buildSpeechletResponse(cardTitle, speechOutput, repromptText, shouldEndSession));
+    callback(sessionAttributes, buildSpeechletResponse(cardTitle, speechOutput, repromptText, shouldEndSession));
+
 }
 
-function getColorFromSession(intent, session, callback) {
-    let favoriteColor;
-    const repromptText = null;
-    const sessionAttributes = {};
-    let shouldEndSession = false;
-    let speechOutput = '';
 
-    if (session.attributes) {
-        favoriteColor = session.attributes.favoriteColor;
-    }
+function viewBookedClass(intent, session, callback) {
 
-    if (favoriteColor) {
-        speechOutput = `Your favorite color is ${favoriteColor}. Goodbye.`;
-        shouldEndSession = true;
-    } else {
-        speechOutput = "I'm not sure what your favorite color is, you can say, my favorite color " +
-            ' is red';
-    }
+    const cardTitle = intent.name;
+    let repromptText = '';
+    let sessionAttributes = {};
+    const shouldEndSession = false;
+    let speechOutput = 'You have booked 2 classes!';
 
-    // Setting repromptText to null signifies that we do not want to reprompt the user.
-    // If the user does not respond or says something that is not understood, the session
-    // will end.
-    callback(sessionAttributes,
-         buildSpeechletResponse(intent.name, speechOutput, repromptText, shouldEndSession));
+    //http request to the back end
+
+    //if http request is not null
+    //speechOutput = request result
+    //else
+    //speechOutput = 'you have not booked any classes yet';
+    //repromptText = 'To book classes say: Reserve a class for this time with location' + 
+    //'Search for classes by saying What are the available classes';
+
+    callback(sessionAttributes, buildSpeechletResponse(cardTitle, speechOutput, repromptText, shouldEndSession));
 }
 
+function searchForClass(intent, session, callback) {
+
+    const cardTitle = intent.name;
+    let repromptText = '';
+    let sessionAttributes = {};
+    const shouldEndSession = false;
+    let speechOutput = 'You have booked 2 classes!';
+
+    callback(sessionAttributes, buildSpeechletResponse(cardTitle, speechOutput, repromptText, shouldEndSession));
+}
 
 // --------------- Events -----------------------
 
@@ -238,6 +141,7 @@ function onLaunch(launchRequest, session, callback) {
     getWelcomeResponse(callback);
 }
 
+
 /**
  * Called when the user specifies an intent for this skill.
  */
@@ -251,11 +155,11 @@ function onIntent(intentRequest, session, callback) {
     
     if (intentName === 'BookAClassIntent') {
         bookGymClass(intent, session, callback);
-    } else if (intentName === 'BookedClassIntents') {
-        getBookedClass(intent, session, callback);
-    } else if (intentName === 'SearchAvailableClassIntent') {
-        searchForAvailableClasses(callback);
-    } else if (intentName === 'AMAZON.HelpIntent') {
+    }else if(intentName === 'BookedClassIntent'){
+        viewBookedClass(intent, session, callback);
+    }else if(intentName === 'SearchAvailableClassIntent'){
+        searchForClass(intent, session, callback);
+    }else if (intentName === 'AMAZON.HelpIntent') {
         getWelcomeResponse(callback);
     }else if (intentName === 'AMAZON.StopIntent' || intentName === 'AMAZON.CancelIntent') {
         handleSessionEndRequest(callback);
@@ -280,6 +184,7 @@ function onSessionEnded(sessionEndedRequest, session) {
 // etc.) The JSON body of the request is provided in the event parameter.
 exports.handler = (event, context, callback) => {
     try {
+        console.log('hey!!');
         console.log(`event.session.application.applicationId=${event.session.application.applicationId}`);
 
         /**
