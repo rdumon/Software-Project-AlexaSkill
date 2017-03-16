@@ -1,4 +1,6 @@
 'use strict';
+var request = require("request");
+// var http = require('http');
 /**
  * This sample demonstrates a simple skill built with the Amazon Alexa Skills Kit.
  * The Intent Schema, Custom Slots, and Sample Utterances for this skill, as well as
@@ -97,7 +99,27 @@ function viewBookedClass(intent, session, callback) {
     let repromptText = '';
     let sessionAttributes = {};
     const shouldEndSession = false;
+    var classInformation = {};
     let speechOutput = 'You have booked 2 classes!';
+
+
+    // console.log('makng request');
+
+    // request('http://nuffieldapiwrapper.azurewebsites.net/classes', function (error, response, body) {
+    //       if (!error && response.statusCode == 200) {
+    //        	classInformation = JSON.parse(body);
+    //        }
+    //         // session.send("These are the available classes: ");
+    //         // for(var i = 0; i < classInformation.length; i++) {
+    //         //   session.send("Class Name: " + classInformation[0].ClassName + "\n" +
+    //         //   "Class Time: " + classInformation[0].classTime + "\n"+
+    //         //   "Duration: " + classInformation[0].Duration + "\n" +
+    //         //   "Class Days: " + classInformation[0].classDays
+    // });
+
+    // console.log('after request');
+
+    // speechOutput = 'You have booked '+ classInformation.length +' classes!';
 
     //http request to the back end
 
