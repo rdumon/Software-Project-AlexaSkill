@@ -1,64 +1,101 @@
-BookAClassIntent Book the {ClassName} class at {Time} in {Location} 
-BookAClassIntent Book the {ClassName} class at {Time} 
-BookAClassIntent Book the {ClassName} class at {Location}  	
-BookAClassIntent Reserve {ClassName} at {Time} in {Location}
-BookAClassIntent Reserve {ClassName} at {Time}
-BookAClassIntent Reserve {ClassName} in {Location}
-BookAClassIntent Reserve {ClassName}
+//---------- Booking System----------//
 
-BookedClassIntent View my bookings 
-BookedClassIntent What is the class I booked {TimePhrase}
-BookedClassIntent What is the class I booked {TimeDate}
+BookClassIntent I would like to book a class
+BookClassIntent Book a class please
+BookClassIntent Can I book a class
+BookClassIntent Access booking System 
 
-SearchAvailableClassIntent What are the available classes in {Gym}
-SearchAvailableClassIntent What are the available classes in {Gym}
-SearchAvailableClassIntent Is there a {Gym} {Time}
-SearchAvailableClassIntent What are the available classes in {Gym}
+BookClassCommand Book {Class} on {Time}
 
-LIST_OF_CLASSES cardio | pilates | boxing | swimming
-LIST_OF_LOCATIONS leicester square | russel square | kensington
-LIST_OF_GYMS leicester square | russel square | kensington
+
+//------------ View Availibility --------//
+
+ViewClassIntent I would like to see the available Classes
+ViewClassIntent Access the Availibity System
+
+ViewClassCommandByClass When is {Class} available
+
+ViewClassCommandByDate What are the classes on this {Time}
+
+//---------- Cancel Class System ---------//
+
+CancelClassIntent Access Cancelation System
+CancelClassIntent I would like to cancel a class
+
+CancelClassCommand Cancel {Class} on {Time}
+
+//---------- Active Bookings System --------//
+
+ActiveBookingsIntent What are my booked classes
+ActiveBookingsIntent I would like to hear my current bookings
+ActiveBookingsIntent What classes have I booked so far
+ActiveBookingsIntent What classes have I booked
+ActiveBookingsIntent List of my current classes
+
+//-------------Intent Skeleton-------------//
+
+LIST_OF_CLASSES pilates | yoga | zumba
 
 {
 	"intents": [
     {
-      "intent": "BookAClassIntent",
+      "intent": "BookClassIntent",
+    },
+    {
+      "intent": "BookClassCommand",
       "slots": [
         {
-          "name": "ClassName",
+          "name": "Class",
           "type": "LIST_OF_CLASSES"
         },
         {
           "name": "Time",
           "type": "AMAZON.Time"
-        },
-        {
-          "name": "Location",
-          "type": "LIST_OF_LOCATIONS"
         }
       ]
     },
     {
-      "intent": "BookedClassIntent"
+      "intent": "ViewClassIntent"
+    },
+     {
+      "intent": "ViewClassCommandByClass"
+      "slots": [
+       {
+          "name": "Class",
+          "type": "LIST_OF_CLASSES"
+        }
+       ]
+    },
+         {
+      "intent": "ViewClassCommandByDate"
       "slots": [
         {
-          "name": "TimePhrase",
+          "name": "Time",
           "type": "AMAZON.Time"
-        },
-        {
-          "name": "TimeDate",
-          "type": "AMAZON.Date"
         }
        ]
     },
     {
-      "intent": "SearchAvailableClassIntent"
+      "intent": "ViewClassCommandBook"
+    },
+    {
+      "intent": "CancelClassIntent"
+    },
+      {
+      "intent": "CancelClassCommand"
       "slots": [
+       {
+          "name": "Class",
+          "type": "LIST_OF_CLASSES"
+        },
         {
-          "name": "Gym",
-          "type": "LIST_OF_GYMS"
+          "name": "Time",
+          "type": "AMAZON.Time"
         }
        ]
+    },
+    {
+      "intent": "ActiveBookingsIntent"
     },
     {
       "intent": "AMAZON.HelpIntent"

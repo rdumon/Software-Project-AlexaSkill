@@ -48,12 +48,8 @@ function getWelcomeResponse(callback) {
     // If we wanted to initialize the session to have some attributes we could add those here.
     const sessionAttributes = {};
     const cardTitle = 'Welcome';
-    const speechOutput = 'Welcome to the Nuffield Health Alexa Booking System. ' +
-        'What would you like to do?';
-    // If the user either does not reply to the welcome message or says something that is not
-    // understood, they will be prompted again with this text.
-    const repromptText = 'You can ask to book a gym class or search for the available classes.' +
-        'Start saying: book me class at this time in this gym, or what are the available classes at this gym';
+    const speechOutput = "Welcome to the Nuffield Health Alexa Booking System. What would you like to do?";
+    const repromptText = "Just say, I would like to, followed by what you want. Your options are: book a class, view availability of a class, cancel a booking or know your current bookings.";
     const shouldEndSession = false;
 
     callback(sessionAttributes,
@@ -63,74 +59,259 @@ function getWelcomeResponse(callback) {
 function handleSessionEndRequest(callback) {
     const cardTitle = 'Session Ended';
     const speechOutput = 'Thank you for using the Nuffield Skill. Have a nice day!';
-    // Setting this to true ends the session and exits the skill.
+
     const shouldEndSession = true;
 
     callback({}, buildSpeechletResponse(cardTitle, speechOutput, null, shouldEndSession));
 }
 
-function bookGymClass(intent, session, callback) {
 
-    const cardTitle = intent.name;
-    let className = intent.slots.ClassName;
-    let repromptText = '';
+//---------------------Booking SYSTEM ---------------------------
+function bookClassIntent(intent, session, callback) {
+
     let sessionAttributes = {};
+    const cardTitle = intent.name;
+    let speechOutput = "What class would you like to book? Tell me time and class name. For example, you can say: book pilates on Friday";
+    let repromptText = "If you would like to know the availability of a class say: I would like to know the availability of class.";
     const shouldEndSession = false;
-    let speechOutput = '';
 
-    if (className) {
-        const gym = className.value;
-        speechOutput = `the gym you mentioned is ${gym}.` +"";
-        repromptText = "You can view your bookings by saying view my bookings";
-    } else {
-        speechOutput = "I'm not sure what you mean. Please try again.";
-        repromptText = "Try again by saying: " +
-            'book me class at this time in this gym or what are the available classes at this gym';
-    }
+    callback(sessionAttributes, buildSpeechletResponse(cardTitle, speechOutput, repromptText, shouldEndSession));
+
+}
+
+// function bookClassCommand(intent, session, callback){   
+
+//     let sessionAttributes = {};
+//     const cardTitle = intent.name;
+//     let speechOutput = '';
+//     let repromptText = '';
+//     const shouldEndSession = false;
+//     const className = intent.slots.Class;
+//     const time = intent.slots.Time;
+
+//     if(className && time){
+
+//         if(isAvailable(ClassName, time)){
+
+//             request({
+//                 url: 'http://nuffieldhealth.azurewebsites.net/book_class',
+//                 method: 'POST',
+//                 json: {
+//                     userID: '1',
+//                     classID: session.classID   //what is this?????!!!!!
+//                 }
+//             }, function(error, response, body){
+//                 if(error) {
+//                     console.log(error);
+//                 } else {
+//                     speechOutput = "Your class is booked!";
+//                 }
+//             });
+
+//         }else {
+//             speechOutput = "The class is not available at this time! Make sure you check the availability of a class before booking it.";
+//         }
+
+//     } else if (!className && time){
+//         speechOutput = "You have not provided a class name.";
+//     } else if (className && !time) {
+//         speechOutput = "You have not provided a class time." ;
+//     } else {
+//         speechOutput = "You have not provided any information.";
+//     }
+
+//     repromptText = "You can know the availability of a class by saying I would like to know the availability of a class!";
+
+
+//     callback(sessionAttributes, buildSpeechletResponse(cardTitle, speechOutput, repromptText, shouldEndSession));
+
+
+// }
+
+//-------------------------Canceling SYSTEM----------------------
+
+function cancelClassIntent(intent, session, callback) {
+
+    let sessionAttributes = {};
+    const cardTitle = intent.name;
+    let speechOutput = "What class would you like to cancel? Tell me time and class name. For example, you can say: cancel pilates on Friday.";
+    let repromptText = "If you would like to know what classes you have booked. Say: what classes have I booked?";
+    const shouldEndSession = false;
 
     callback(sessionAttributes, buildSpeechletResponse(cardTitle, speechOutput, repromptText, shouldEndSession));
 
 }
 
 
-function viewBookedClass(intent, session, callback) {
+// function cancelClassCommand(intent, session, callback){
+
+//     let sessionAttributes = {};
+//     const cardTitle = intent.name;
+//     let speechOutput = '';
+//     let repromptText = '';
+//     const shouldEndSession = false;
+//     const className = intent.slots.Class;
+//     const time = intent.slots.Time;
+
+//     if(className && time){
+
+//         request({
+//             // What do I put here !?
+//             // url: 'http://nuffieldhealth.azurewebsites.net/book_class',
+//             // method: 'POST',
+//             // json: {
+//             //     userID: '1',
+//             //     classID: session.classID
+//             // }
+//         }, function(error, response, body){
+//             if(error) {
+//                 console.log(error);
+//             } else {
+//                 speechOutput = "The "+ className +" class has been canceled!";
+//             }
+//         });
+
+
+//     } else if (!className && time){
+//         speechOutput = "You have not provided a class name";
+//     } else if (className && !time) {
+//         speechOutput = "You have not provided a class time" ;
+//     } else {
+//         speechOutput = "You have not provided any information";
+//     }
+
+//     repromptText = "If you would like to know what classes you have booked. Just say, what classes have I booked?";
+
+//     callback(sessionAttributes, buildSpeechletResponse(cardTitle, speechOutput, repromptText, shouldEndSession));
+
+// }
+
+//---------------------Active bookings SYSTEM-----------------
+
+function activeBookingsIntent(intent, session, callback) {
+
 
     const cardTitle = intent.name;
     let repromptText = '';
     let sessionAttributes = {};
     const shouldEndSession = false;
     var classInformation = {};
-    let speechOutput = '';
+    let speechOutput = "";
 
-    getJSON(function(data) {
+    getActiveBookings(function(data) {
         classInformation = data;
-        speechOutput = 'You have booked '+ classInformation.length +' classes!';
+        console.log(classInformation);
+        if (classInformation.length == 0){
+            speechOutput = "You have not booked any classes yet. Would you like to book one?";    
+        } else if (classInformation.length == 1) {
+            speechOutput = "You have booked 1 class! You have "+ classInformation.ClassName[0] + " at "+ classInformation[0].classTime +
+                                    ", on " + classInformation[0].classDays + " which lasts " + classInformation[0].Duration + ".";
+        } else {
+            speechOutput = " You have booked "+ classInformation.length +" classes!";
+
+            var classInfoBuilder = "";
+            for(var i = 0; i < classInformation.length; i++){
+            classInfoBuilder =  " You have "+ classInformation.ClassName[i] + " at " + classInformation[i].classTime +
+                                     ", on " + classInformation[i].classDays + " which lasts " + classInformation[i].Duration + ".";
+             speechOutput = speechOutput + classInfoBuilder;
+            }
+        }
+        
+
         callback(sessionAttributes, buildSpeechletResponse(cardTitle, speechOutput, repromptText, shouldEndSession));
     })
 
+
 }
 
-function searchForClass(intent, session, callback) {
+//------------------------------Availibility System-----------------------
 
-    const cardTitle = intent.name;
-    let gym = intent.slots.Gym;
-    let repromptText = '';
+function viewClassIntent(intent, session, callback) {
+
     let sessionAttributes = {};
+    const cardTitle = intent.name;
+    let speechOutput = "You can know what classes are available by class name or for a certain date. Simply say, for example, what are the gyms available on this day or ,is their pilates 24th of april";
+    let repromptText = "Once you have found an available gym that you like you can say, for example, book pilates on friday the 8th of April.";
     const shouldEndSession = false;
-    let speechOutput = '';
-
-    if (gym) {
-        const gymName = gym.value;
-        speechOutput = `the gym you mentioned is ${gymName}.` +"";
-        repromptText = "You can book this class by saying book this class at this time.";
-    } else {
-        speechOutput = "I'm not sure what you mean. Please try again.";
-        repromptText = "Try again by saying: " +
-            'Book me class at this time in this gym or what are the available classes at this gym.';
-    }
 
     callback(sessionAttributes, buildSpeechletResponse(cardTitle, speechOutput, repromptText, shouldEndSession));
+
 }
+
+// function viewClassCommandByClass(intent, session, callback) {
+
+//     let sessionAttributes = {};
+//     const cardTitle = intent.name;
+//     let speechOutput = '';
+//     let repromptText = '';
+//     const shouldEndSession = false;
+//     const className = intent.slots.Class;
+
+//     if(className){
+
+//         // request({
+//         //     url: 'http://nuffieldhealth.azurewebsites.net/book_class',
+//         //     method: 'POST',
+//         //     json: {
+//         //         userID: '1',
+//         //         classID: session.classID
+//         //     }
+//         // }, function(error, response, body){
+//         //     if(error) {
+//         //         console.log(error);
+//         //     } else {
+//         //         speechOutput = "Your class is canceled!";
+//         //     }
+//         // });
+
+
+//     } else {
+//         speechOutput = "You have not provided any information";
+//     }
+
+//     repromptText = "If you would like to book a class. Say: what classes have I booked?";
+
+//     callback(sessionAttributes, buildSpeechletResponse(cardTitle, speechOutput, repromptText, shouldEndSession));
+
+// }
+
+// function viewClassCommandByDate(intent, session, callback) {
+
+//     let sessionAttributes = {};
+//     const cardTitle = intent.name;
+//     let speechOutput = '';
+//     let repromptText = '';
+//     const shouldEndSession = false;
+//     const className = intent.slots.Class;
+
+//     if(className){
+
+//         // request({
+//         //     url: 'http://nuffieldhealth.azurewebsites.net/book_class',
+//         //     method: 'POST',
+//         //     json: {
+//         //         userID: '1',
+//         //         classID: session.classID
+//         //     }
+//         // }, function(error, response, body){
+//         //     if(error) {
+//         //         console.log(error);
+//         //     } else {
+//         //         speechOutput = "Your class is canceled!";
+//         //     }
+//         // });
+
+//     } else {
+//         speechOutput = "You have not provided a correct date";
+//     }
+
+//     repromptText = "";
+
+//     callback(sessionAttributes, buildSpeechletResponse(cardTitle, speechOutput, repromptText, shouldEndSession));
+    
+    
+// }
+
 
 // --------------- Events -----------------------
 
@@ -163,12 +344,22 @@ function onIntent(intentRequest, session, callback) {
 
     // Dispatch to your skill's intent handlers
     
-    if (intentName === 'BookAClassIntent') {
-        bookGymClass(intent, session, callback);
-    }else if(intentName === 'BookedClassIntent'){
-        viewBookedClass(intent, session, callback);
-    }else if(intentName === 'SearchAvailableClassIntent'){
-        searchForClass(intent, session, callback);
+    if (intentName === 'BookClassIntent') {
+        bookClassIntent(intent, session, callback);
+    //}else if(intentName === 'BookClassCommand'){
+    //    bookClassCommand(intent, session, callback);
+    }else if(intentName === 'ViewClassIntent'){
+        viewClassIntent(intent, session, callback);
+    //}else if(intentName === 'ViewClassCommandByClass'){
+    //    viewClassCommandByClass(intent, session, callback);
+    //}else if(intentName === 'ViewClassCommandByDate'){
+    //    viewClassCommandByDate(intent, session, callback);
+    }else if(intentName === 'CancelClassIntent'){
+        cancelClassIntent(intent, session, callback);
+    //}else if(intentName === 'CancelClassCommand'){
+    //    cancelClassCommand(intent, session, callback);
+    }else if(intentName === 'ActiveBookingsIntent'){
+        activeBookingsIntent(intent, session, callback);
     }else if (intentName === 'AMAZON.HelpIntent') {
         getWelcomeResponse(callback);
     }else if (intentName === 'AMAZON.StopIntent' || intentName === 'AMAZON.CancelIntent') {
@@ -237,11 +428,57 @@ exports.handler = (event, context, callback) => {
 //--------------------------HTTP Functions--------------------------
 
 
-function getJSON(callback){
+function getActiveBookings(callback){
 
-    request.get("http://nuffieldapiwrapper.azurewebsites.net/classes", function(error, response, body) {
+     request({
+        url: 'http://nuffieldhealth.azurewebsites.net/ActiveBookings', //URL to hit
+        method: 'GET',
+        //Lets post the following key/values as form
+        body: {
+          userID: "1"
+        }
+    },function(error, response, body) {
         var d = JSON.parse(body);
         callback(d);
     })
 
 }
+
+function isAvailable(className, time){
+
+     request({
+                url: 'http://nuffieldhealth.azurewebsites.net/classAvailable',
+                method: 'POST',
+                json: {
+                    class_title: "'"+className+"'",
+                    class_date: "'"+time+"'"
+                }
+            }, function(error, response, body){
+                if(error) {
+                    console.log(error);
+                } else {
+                    if(body.length == 0) {
+                      return false;
+                    }
+                    else {
+                        return true;
+                    }
+                }
+            }
+    });
+
+}
+
+// returns true if the class is in the list of existing classes
+// function classNameChecker(inputClass){
+
+//     //TODO: make sure you have all possible available classes in the array.
+//     const classNames = {'yoga','pilates','cardio', 'pilate'};
+
+//     for(var i = 0; i < classNames.length ; i++) {
+//         if (inputClass.toLowerCase() === ClassNames[i].toLowerCase()) {
+//             return true;
+//         }
+//     }
+//     return false;
+// }
