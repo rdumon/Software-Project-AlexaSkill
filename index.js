@@ -531,66 +531,66 @@ function createCurrentSession() {
 //   });
 // }
 
-// function getSubscribers(session) {
-//   request({
-//       url: 'https://transpiredashboard.westeurope.cloudapp.azure.com/skype/subscribers',
-//       method: 'POST',
-//       form: {
-//           id: user_id_login,
-//           key:'srnsgDxaoMuWP7IkDAXQNa6ms5YJeeULGeZNHEJ4qPyEd1H3QpDgYAZPyj5McVBNHDo7xuNgdcq4I2Lr2rj7FvFDorSfKb6LIDpT9ha8nNJOyBWC8PQpo8o4=='
-//       }
-//   }, function(error, response, body){
-//       if(error) {
-//           console.log(error);
-//       } else {
-//           // var resp = JSON.parse(body);
-//           var resp = body;
-//           var subscribers = [];
-//           for (var r in resp.subscribers){
-//             if (resp[r]) subscribers.push(r);
-//           }
+function getSubscribers(session) {
+  request({
+      url: 'https://transpiredashboard.westeurope.cloudapp.azure.com/skype/subscribers',
+      method: 'POST',
+      form: {
+          id: user_id_login,
+          key:'srnsgDxaoMuWP7IkDAXQNa6ms5YJeeULGeZNHEJ4qPyEd1H3QpDgYAZPyj5McVBNHDo7xuNgdcq4I2Lr2rj7FvFDorSfKb6LIDpT9ha8nNJOyBWC8PQpo8o4=='
+      }
+  }, function(error, response, body){
+      if(error) {
+          console.log(error);
+      } else {
+          // var resp = JSON.parse(body);
+          var resp = body;
+          var subscribers = [];
+          for (var r in resp.subscribers){
+            if (resp[r]) subscribers.push(r);
+          }
 
-//           var customDate = session.classDate;
-//           var hours = parseInt(session.classTime[0])*10 + parseInt(session.classTime[1]) - 1;
+          var customDate = session.classDate;
+          var hours = parseInt(session.classTime[0])*10 + parseInt(session.classTime[1]) - 1;
 
-//           customDate += hours*3600;
-//           console.log(customDate);
-//           var classBooking = {
-//             userID : user_id_login,
-//             name : session.className,
-//             date: session.classDate,
-//             time: session.classTime
-//           }
+          customDate += hours*3600;
+          console.log(customDate);
+          var classBooking = {
+            userID : user_id_login,
+            name : session.className,
+            date: session.classDate,
+            time: session.classTime
+          }
 
-//           var msg = {
-//             model : "booking",
-//             content : classBooking
-//           }
+          var msg = {
+            model : "booking",
+            content : classBooking
+          }
 
-//           var msgString = JSON.stringify(msg);
+          var msgString = JSON.stringify(msg);
 
-//           var subscribersStr = JSON.stringify(subscribers);
+          var subscribersStr = JSON.stringify(subscribers);
 
-//           console.log(response.statusCode, body);
+          console.log(response.statusCode, body);
 
-//           request({
-//               url: 'https://transpiredashboard.westeurope.cloudapp.azure.com/queues/push',
-//               method: 'POST',
-//               form: {
-//                   subscribers: subscribersStr,
-//                   m: msgString,
-//                   key:'srnsgDxaoMuWP7IkDAXQNa6ms5YJeeULGeZNHEJ4qPyEd1H3QpDgYAZPyj5McVBNHDo7xuNgdcq4I2Lr2rj7FvFDorSfKb6LIDpT9ha8nNJOyBWC8PQpo8o4=='
-//               }
-//           }, function(err, resp, body){
-//             if(err){
-//               console.log(err);
-//               return
-//             } else if(resp.statusCode != 200){
-//               console.log(resp.statusCode, body);
-//             }
-//           });
-//   }
-//   });
-// }
+          request({
+              url: 'https://transpiredashboard.westeurope.cloudapp.azure.com/queues/push',
+              method: 'POST',
+              form: {
+                  subscribers: subscribersStr,
+                  m: msgString,
+                  key:'srnsgDxaoMuWP7IkDAXQNa6ms5YJeeULGeZNHEJ4qPyEd1H3QpDgYAZPyj5McVBNHDo7xuNgdcq4I2Lr2rj7FvFDorSfKb6LIDpT9ha8nNJOyBWC8PQpo8o4=='
+              }
+          }, function(err, resp, body){
+            if(err){
+              console.log(err);
+              return
+            } else if(resp.statusCode != 200){
+              console.log(resp.statusCode, body);
+            }
+          });
+  }
+  });
+}
 
 
