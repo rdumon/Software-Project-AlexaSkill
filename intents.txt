@@ -102,3 +102,24 @@ LIST_OF_CLASSES pilates | yoga | zumba
     }
   ]
 }
+
+//---------------test 1------------------//
+{
+  "intents": [
+    {
+      "intent": "BookClassIntent",
+    },
+    {
+      "intent": "ViewClassIntent"
+    },
+    {
+      "intent": "CancelClassIntent"
+    },
+    {
+      "intent": "ActiveBookingsIntent"
+    },
+    {
+      "intent": "AMAZON.HelpIntent"
+    }
+  ]
+}
