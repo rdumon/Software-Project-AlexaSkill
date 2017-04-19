@@ -13,8 +13,6 @@ BookClassCommand Book {Class} on {Time}
 ViewClassIntent I would like to see the available Classes
 ViewClassIntent Access the Availibity System
 
-ViewClassCommandByClass When is {Class} available
-
 ViewClassCommandByDate What are the classes on this {Time}
 
 //---------- Cancel Class System ---------//
@@ -57,16 +55,7 @@ LIST_OF_CLASSES pilates | yoga | zumba
     {
       "intent": "ViewClassIntent"
     },
-     {
-      "intent": "ViewClassCommandByClass"
-      "slots": [
-       {
-          "name": "Class",
-          "type": "LIST_OF_CLASSES"
-        }
-       ]
-    },
-         {
+    {
       "intent": "ViewClassCommandByDate"
       "slots": [
         {
